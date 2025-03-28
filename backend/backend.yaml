@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: new-backend
+spec:
+  selector:
+    matchLabels:
+        app: new-backend
+  template:
+    metadata:
+      labels:
+        app: new-backend
+    spec:
+      containers:
+        - name: new-backend
+          image: shivamfullstack111/new-backend:v1
+          ports:
+            - containerPort: 4000
+          env:
+            - name: MONGO_HOST
+              valueFrom:
+                configMapKeyRef:
+                  key: MONGO_HOST
+                  name: config-map
+            - name: MONGO_PORT
+              valueFrom:
+                configMapKeyRef:
+                  key: MONGO_PORT
+                  name: config-map
+          resources:
+            limits:
+              cpu: "128m"
+              memory: "500Mi"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: new-backend
+spec:
+  selector:
+    app: new-backend
+  ports:
+    - port: 4000
+      targetPort: 4000
+  type: LoadBalancer
+
+              
+      

@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongodb
+  labels:
+    app: mongodb
+spec:
+  selector:
+    matchLabels:
+      app: mongodb
+  template:
+    metadata:
+      labels:
+        app: mongodb
+    spec:
+      containers:
+       - name: mongodb
+         image: mongo
+         resources:
+          limits:
+            cpu: "129m"
+            memory: "500Mi"
+         ports:
+          - containerPort: 27017
+         volumeMounts:
+          - mountPath: /data/db
+            name: mypvc
+      volumes:
+        - name: my-storage
+          persistentVolumeClaim:
+            claimName: new-volume-pvc
+        
+
+
+
+
+--- 
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb
+spec:
+  selector:
+    app: mongodb
+  ports:
+    - port: 27017
+      targetPort: 27017
+  
+  type: LoadBalancer  
+       
+       
+       
+      
+
